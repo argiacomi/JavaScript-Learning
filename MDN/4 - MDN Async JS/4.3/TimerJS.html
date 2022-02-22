@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Simple setInterval clock</title>
+    <style>
+      p {
+        font-family: sans-serif;
+        font-size: 2em;
+        padding: 10px 15px;
+        margin: 0 12px;
+      }
+      button {
+        padding: 10px 15px;
+        border: 0;
+        background: gray;
+        color: #fff;
+        border-radius: 5px;
+        margin: 5px 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="clock"></p>
+    <script>
+      const body = document.querySelector("body");
+
+      const start = document.createElement("button");
+      start.textContent = "Start";
+      body.appendChild(start);
+
+      const stop = document.createElement("button");
+      stop.textContent = "Stop";
+      body.appendChild(stop);
+
+      const reset = document.createElement("button");
+      reset.textContent = "Reset";
+      body.appendChild(reset);
+
+      let timer;
+      let startTime;
+      let seconds = 0;
+      let minutes = 0;
+      let hours = 0;
+
+      function createClock(delay) {
+        timer = setInterval(displayTime, delay);
+
+        function displayTime() {
+          seconds = Math.floor(((Date.now() - startTime) / 1000) % 60);
+          minutes = Math.floor(((Date.now() - startTime) / 1000 / 60) % 60);
+          hours = Math.floor(hours + (Date.now() - startTime) / 1000 / 3600);
+
+          let secondsFixed = seconds < 10 ? `0${seconds}` : `${seconds}`;
+          let minutesFixed = minutes < 10 ? `0${minutes}` : `${minutes}`;
+          let hoursFixed = hours < 10 ? `0${hours}` : `${hours}`;
+
+          document.querySelector(
+            ".clock"
+          ).textContent = `${hoursFixed} : ${minutesFixed} : ${secondsFixed}`;
+        }
+      }
+
+      document.querySelector(".clock").textContent = `00 : 00 : 00`;
+
+      start.addEventListener("click", async () => {
+        startTime = await new Date();
+        createClock(1000);
+      });
+
+      stop.addEventListener("click", (params) => {
+        clearInterval(timer);
+      });
+
+      reset.addEventListener("click", () => {
+        document.querySelector(".clock").textContent = `00 : 00 : 00`;
+        clearInterval(timer);
+      });
+    </script>
+  </body>
+</html>
