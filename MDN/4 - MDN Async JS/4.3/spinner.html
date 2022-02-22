@@ -36,14 +36,14 @@
       let rAF;
       let isRotating = false;
       body.addEventListener("click", () => {
-		if (!isRotating) {
+        if (!isRotating) {
           isRotating = true;
-		  draw();
+          draw();
         } else {
           isRotating = false;
-		  cancelAnimationFrame(rAF);
+          cancelAnimationFrame(rAF);
         }
-	  });
+      });
 
       // Create a draw() function
       function draw(timestamp) {
