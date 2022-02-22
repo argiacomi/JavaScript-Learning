@@ -1,5 +1,3 @@
-/* Drew Giacomi 2.21.2022*/
-
 // setup canvas
 
 const canvas = document.querySelector('canvas');
