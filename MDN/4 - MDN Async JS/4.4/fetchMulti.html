@@ -39,6 +39,9 @@
               `There has been a problem with your fetch operation for resource "${url}": ` +
                 e.message
             );
+          })
+          .finally(() => {
+            console.log(`fetch attempt for "${url}" finished.`);
           });
       }
 
@@ -48,9 +51,9 @@
 
       Promise.all([coffee, tea, description]).then((values) => {
         console.log(values);
-  
+
         for (const value of values) {
-          displayOnPage(value)
+          displayOnPage(value);
         }
       });
     </script>
