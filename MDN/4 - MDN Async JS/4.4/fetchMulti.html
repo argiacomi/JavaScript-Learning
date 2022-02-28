@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Multi Example</title>
+  </head>
+  <body>
+    <script>
+      function displayOnPage(value) {
+        if (value.type === "image/jpeg") {
+          let objectURL = URL.createObjectURL(value);
+          let image = document.createElement("img");
+          image.src = objectURL;
+          document.body.appendChild(image);
+        } else {
+          let para = document.createElement("p");
+          para.innerText = value;
+          document.body.appendChild(para);
+        }
+      }
+
+      function fetchAndDecode(url, type) {
+        return fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+              if (type === "blob") {
+                return response.blob();
+              } else if (type === "text") {
+                return response.text();
+              }
+            }
+          })
+          .catch((e) => {
+            console.log(
+              `There has been a problem with your fetch operation for resource "${url}": ` +
+                e.message
+            );
+          });
+      }
+
+      let coffee = fetchAndDecode("coffee.jpg", "blob");
+      let tea = fetchAndDecode("tea.jpg", "blob");
+      let description = fetchAndDecode("description.txt", "text");
+
+      Promise.all([coffee, tea, description]).then((values) => {
+        console.log(values);
+  
+        for (const value of values) {
+          displayOnPage(value)
+        }
+      });
+    </script>
+  </body>
+</html>
