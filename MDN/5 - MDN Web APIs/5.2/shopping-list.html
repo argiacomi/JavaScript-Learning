@@ -28,33 +28,44 @@
     <ul></ul>
 
     <script>
-      const ul = document.querySelector("ul");
+      const list = document.querySelector("ul");
       const inpt = document.querySelector("input");
       const add = document.querySelector("button");
 
-      add.onclick = () => {
-        const newItem = inpt.value;
+      function addNewListItem() {
+        let newItem = inpt.value;
         inpt.value = "";
         //console.log(newItem);
 
-        const li = document.createElement("li");
-        const span = document.createElement("span");
-        const del = document.createElement("button");
-        del.innerText = "Delete";
+        const listItem = document.createElement("li");
+        const listText = document.createElement("span");
+        const listBtn = document.createElement("button");
 
-        li.append(span);
-        li.append(del);
+        listItem.append(listText);
+        listItem.append(listBtn);
+        listText.innerText = newItem;
+        listBtn.innerText = "Delete";
 
-        span.innerText = newItem;
-        ul.append(li);
+        list.append(listItem);
 
-        del.addEventListener("click", (e) => {
-          console.log(e.currentTarget.parentNode);
+        listBtn.addEventListener("click", (e) => {
           e.currentTarget.parentNode.remove();
         });
 
         inpt.focus();
+      }
+
+      add.onclick = (e) => {
+        if (inpt.value != "") {
+          addNewListItem();
+        }
       };
+
+      inpt.addEventListener("keypress", (e) => {
+        if (e.key == "Enter" && inpt.value != "") {
+          addNewListItem();
+        }
+      });
     </script>
   </body>
 </html>
