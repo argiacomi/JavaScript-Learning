@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Multi Example</title>
+  </head>
+  <body>
+    <script>
+      function displayOnPage(value) {
+        if (value.type === "image/jpeg") {
+          let objectURL = URL.createObjectURL(value);
+          let image = document.createElement("img");
+          image.src = objectURL;
+          document.body.appendChild(image);
+        } else {
+          let para = document.createElement("p");
+          para.innerText = value;
+          document.body.appendChild(para);
+        }
+      }
+
+      const fetchAndDecode = async (resource) => {
+        const response = await fetch(resource[0]);
+        let data;
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          if (resource[1] === "blob") {
+            data = await response.blob();
+          } else if (resource[1] === "text") {
+            data = await response.text();
+          }
+        }
+
+        return data;
+      };
+
+      const resources = [
+        ["coffee.jpg", "blob"],
+        ["tea.jpg", "blob"],
+        ["description.txt", "text"],
+      ];
+
+      async function displayContent() {
+        let coffee = fetchAndDecode(resources[0]);
+        let tea = fetchAndDecode(resources[1]);
+        let description = fetchAndDecode(resources[2]);
+
+        let values = await Promise.all([coffee, tea, description]).then(
+          (values) => {
+            console.log(values);
+            values.forEach((value) => displayOnPage(value));
+          }
+        );
+      }
+
+      displayContent()
+        .catch((e) => {
+          console.log(
+            `There has been a problem with your fetch operation ` + e.message
+          );
+        })
+        .finally(() => {
+          console.log(`fetch attempt finished.`);
+        });
+    </script>
+  </body>
+</html>
