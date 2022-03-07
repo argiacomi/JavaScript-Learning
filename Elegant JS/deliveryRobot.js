@@ -121,14 +121,10 @@ function lazyRobot({place, parcels}, route) {
     // Describe a route for every parcel
     let routes = parcels.map((parcel) => {
       if (parcel.place != place) {
-<<<<<<< HEAD
         return {
           route: findRoute(roadGraph, place, parcel.place),
           pickUp: true,
         };
-=======
-        return {route: findRoute(roadGraph, place, parcel.place), pickUp: true};
->>>>>>> 4f8ae6d7d2493bee75adc26cf76aa1e0d29be312
       } else {
         return {
           route: findRoute(roadGraph, place, parcel.address),
