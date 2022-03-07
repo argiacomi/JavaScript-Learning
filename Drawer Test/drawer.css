@@ -1,0 +1,29 @@
+input {
+  width: 60px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-style: solid;
+  border-width: 1px;
+  display: block;
+  width: 200px;
+  height: 100%;
+  background-color: #0000ff;
+  transition: left 0.5s;
+}
+
+.box ul {
+  position: absolute;
+  top: 30px;
+  left: 0;
+}
+
+.menu-btn-open {
+  transition: left 0.5s;
+}

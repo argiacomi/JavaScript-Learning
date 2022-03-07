@@ -1,11 +1,18 @@
 const roads = [
-  "Alice's House-Bob's House",   "Alice's House-Cabin",
-  "Alice's House-Post Office",   "Bob's House-Town Hall",
-  "Daria's House-Ernie's House", "Daria's House-Town Hall",
-  "Ernie's House-Grete's House", "Grete's House-Farm",
-  "Grete's House-Shop",          "Marketplace-Farm",
-  "Marketplace-Post Office",     "Marketplace-Shop",
-  "Marketplace-Town Hall",       "Shop-Town Hall"
+  "Alice's House-Bob's House",
+  "Alice's House-Cabin",
+  "Alice's House-Post Office",
+  "Bob's House-Town Hall",
+  "Daria's House-Ernie's House",
+  "Daria's House-Town Hall",
+  "Ernie's House-Grete's House",
+  "Grete's House-Farm",
+  "Grete's House-Shop",
+  'Marketplace-Farm',
+  'Marketplace-Post Office',
+  'Marketplace-Shop',
+  'Marketplace-Town Hall',
+  'Shop-Town Hall',
 ];
 
 class VillageState {
@@ -18,17 +25,19 @@ class VillageState {
     if (!roadGraph[this.place].includes(destination)) {
       return this;
     } else {
-      let parcels = this.parcels.map(p => {
-        if (p.place != this.place) return p;
-        return {place: destination, address: p.address};
-      }).filter(p => p.place != p.address);
+      let parcels = this.parcels
+        .map((p) => {
+          if (p.place != this.place) return p;
+          return {place: destination, address: p.address};
+        })
+        .filter((p) => p.place != p.address);
       return new VillageState(destination, parcels);
     }
   }
 }
 
 function buildGraph(edges) {
-  let graph = Object.create(null); 
+  let graph = Object.create(null);
   function addEdge(from, to) {
     if (graph[from] == null) {
       graph[from] = [to];
@@ -36,7 +45,7 @@ function buildGraph(edges) {
       graph[from].push(to);
     }
   }
-  for (let [from, to] of edges.map(r => r.split("-"))) {
+  for (let [from, to] of edges.map((r) => r.split('-'))) {
     addEdge(from, to);
     addEdge(to, from);
   }
@@ -44,20 +53,18 @@ function buildGraph(edges) {
 }
 
 function runRobot(state, robot, memory, comp) {
-  for (let turn = 0;; turn++) {
+  for (let turn = 0; ; turn++) {
     if (state.parcels.length == 0) {
       comp.push(turn);
-      //console.log(`Done in ${turn} turns`);
-      break
+      break;
     }
     let action = robot(state, memory);
     state = state.move(action.direction);
     memory = action.memory;
-    //console.log(`Moved to ${action.direction}`);
   }
 }
 
-VillageState.random = function(parcelCount = 5) {
+VillageState.random = function (parcelCount = 5) {
   let parcels = [];
   for (let i = 0; i < parcelCount; i++) {
     let address = randomPick(Object.keys(roadGraph));
@@ -67,7 +74,7 @@ VillageState.random = function(parcelCount = 5) {
     } while (place == address);
     parcels.push({place, address});
   }
-  return new VillageState("Post Office", parcels);
+  return new VillageState('Post Office', parcels);
 };
 
 function randomPick(array) {
@@ -83,7 +90,7 @@ function findRoute(graph, from, to) {
       if (place == to) {
         return route.concat(place);
       }
-      if (!work.some(w => w.at == place)) {
+      if (!work.some((w) => w.at == place)) {
         work.push({at: place, route: route.concat(place)});
       }
     }
@@ -102,7 +109,6 @@ function goalOrientedRobot({place, parcels}, route) {
     let parcel = parcels[0];
     if (parcel.place != place) {
       route = findRoute(roadGraph, place, parcel.place);
-      //console.log(route)
     } else {
       route = findRoute(roadGraph, place, parcel.address);
     }
@@ -113,13 +119,17 @@ function goalOrientedRobot({place, parcels}, route) {
 function lazyRobot({place, parcels}, route) {
   if (route.length == 0) {
     // Describe a route for every parcel
-    let routes = parcels.map(parcel => {
+    let routes = parcels.map((parcel) => {
       if (parcel.place != place) {
-        return {route: findRoute(roadGraph, place, parcel.place),
-                pickUp: true};
+        return {
+          route: findRoute(roadGraph, place, parcel.place),
+          pickUp: true,
+        };
       } else {
-        return {route: findRoute(roadGraph, place, parcel.address),
-                pickUp: false};
+        return {
+          route: findRoute(roadGraph, place, parcel.address),
+          pickUp: false,
+        };
       }
     });
 
@@ -129,23 +139,31 @@ function lazyRobot({place, parcels}, route) {
     function score({route, pickUp}) {
       return (pickUp ? 0.5 : 0) - route.length;
     }
-    route = routes.reduce((a, b) => score(a) > score(b) ? a : b).route;
+    route = routes.reduce((a, b) => (score(a) > score(b) ? a : b)).route;
   }
 
   return {direction: route[0], memory: route.slice(1)};
 }
 
-
 const roadGraph = buildGraph(roads);
 const mailRoute = [
-  "Alice's House", "Cabin", "Alice's House", "Bob's House",
-  "Town Hall", "Daria's House", "Ernie's House",
-  "Grete's House", "Shop", "Grete's House", "Farm",
-  "Marketplace", "Post Office"
+  "Alice's House",
+  'Cabin',
+  "Alice's House",
+  "Bob's House",
+  'Town Hall',
+  "Daria's House",
+  "Ernie's House",
+  "Grete's House",
+  'Shop',
+  "Grete's House",
+  'Farm',
+  'Marketplace',
+  'Post Office',
 ];
 
 function countSteps(state, robot, memory) {
-  for (let steps = 0;; steps++) {
+  for (let steps = 0; ; steps++) {
     if (state.parcels.length == 0) return steps;
     let action = robot(state, memory);
     state = state.move(action.direction);
@@ -154,16 +172,15 @@ function countSteps(state, robot, memory) {
 }
 
 function compareRobots(robot1, memory1, robot2, memory2) {
-  let total1 = 0, total2 = 0;
+  let total1 = 0,
+    total2 = 0;
   for (let i = 0; i < 10000; i++) {
     let state = VillageState.random();
     total1 += countSteps(state, robot1, memory1);
     total2 += countSteps(state, robot2, memory2);
   }
-  console.log(`lazyRobot needed ${total1 / 10000} steps per task`)
-  console.log(`goalOrientedRobot needed ${total2 / 10000}`)
+  console.log(`lazyRobot needed ${total1 / 10000} steps per task`);
+  console.log(`goalOrientedRobot needed ${total2 / 10000}`);
 }
 
 compareRobots(lazyRobot, [], goalOrientedRobot, []);
-
-
