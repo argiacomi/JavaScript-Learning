@@ -1,13 +1,13 @@
 const roads = [
-  "Alice's House-Bob's House",
-  "Alice's House-Cabin",
-  "Alice's House-Post Office",
-  "Bob's House-Town Hall",
-  "Daria's House-Ernie's House",
-  "Daria's House-Town Hall",
-  "Ernie's House-Grete's House",
-  "Grete's House-Farm",
-  "Grete's House-Shop",
+  'Alices House-Bobs House',
+  'Alices House-Cabin',
+  'Alices House-Post Office',
+  'Bobs House-Town Hall',
+  'Darias House-Ernies House',
+  'Darias House-Town Hall',
+  'Ernies House-Gretes House',
+  'Gretes House-Farm',
+  'Gretes House-Shop',
   'Marketplace-Farm',
   'Marketplace-Post Office',
   'Marketplace-Shop',
@@ -28,7 +28,7 @@ class VillageState {
       let parcels = this.parcels
         .map((p) => {
           if (p.place != this.place) return p;
-          return {place: destination, address: p.address};
+          return { place: destination, address: p.address };
         })
         .filter((p) => p.place != p.address);
       return new VillageState(destination, parcels);
@@ -72,7 +72,7 @@ VillageState.random = function (parcelCount = 5) {
     do {
       place = randomPick(Object.keys(roadGraph));
     } while (place == address);
-    parcels.push({place, address});
+    parcels.push({ place, address });
   }
   return new VillageState('Post Office', parcels);
 };
@@ -83,15 +83,15 @@ function randomPick(array) {
 }
 
 function findRoute(graph, from, to) {
-  let work = [{at: from, route: []}];
+  let work = [{ at: from, route: [] }];
   for (let i = 0; i < work.length; i++) {
-    let {at, route} = work[i];
+    let { at, route } = work[i];
     for (let place of graph[at]) {
       if (place == to) {
         return route.concat(place);
       }
       if (!work.some((w) => w.at == place)) {
-        work.push({at: place, route: route.concat(place)});
+        work.push({ at: place, route: route.concat(place) });
       }
     }
   }
@@ -101,10 +101,10 @@ function routeRobot(state, memory) {
   if (memory.length == 0) {
     memory = mailRoute;
   }
-  return {direction: memory[0], memory: memory.slice(1)};
+  return { direction: memory[0], memory: memory.slice(1) };
 }
 
-function goalOrientedRobot({place, parcels}, route) {
+function goalOrientedRobot({ place, parcels }, route) {
   if (route.length == 0) {
     let parcel = parcels[0];
     if (parcel.place != place) {
@@ -113,10 +113,10 @@ function goalOrientedRobot({place, parcels}, route) {
       route = findRoute(roadGraph, place, parcel.address);
     }
   }
-  return {direction: route[0], memory: route.slice(1)};
+  return { direction: route[0], memory: route.slice(1) };
 }
 
-function lazyRobot({place, parcels}, route) {
+function lazyRobot({ place, parcels }, route) {
   if (route.length == 0) {
     // Describe a route for every parcel
     let routes = parcels.map((parcel) => {
@@ -136,27 +136,29 @@ function lazyRobot({place, parcels}, route) {
     // This determines the precedence a route gets when choosing.
     // Route length counts negatively, routes that pick up a package
     // get a small bonus.
-    function score({route, pickUp}) {
+    function score({ route, pickUp }) {
       return (pickUp ? 0.5 : 0) - route.length;
     }
-    route = routes.reduce((a, b) => (score(a) > score(b) ? a : b)).route;
+    route = routes.reduce((a, b) =>
+      score(a) > score(b) ? a : b
+    ).route;
   }
 
-  return {direction: route[0], memory: route.slice(1)};
+  return { direction: route[0], memory: route.slice(1) };
 }
 
 const roadGraph = buildGraph(roads);
 const mailRoute = [
-  "Alice's House",
+  'Alices House',
   'Cabin',
-  "Alice's House",
-  "Bob's House",
+  'Alices House',
+  'Bobs House',
   'Town Hall',
-  "Daria's House",
-  "Ernie's House",
-  "Grete's House",
+  'Darias House',
+  'Ernies House',
+  'Gretes House',
   'Shop',
-  "Grete's House",
+  'Gretes House',
   'Farm',
   'Marketplace',
   'Post Office',

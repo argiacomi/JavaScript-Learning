@@ -1,0 +1,38 @@
+body::before {
+  display: block;
+  content: '';
+  height: 56px;
+}
+
+/* Rules for sizing icons */
+.material-icons-sharp.md-18 {
+  font-size: 18px;
+}
+.material-icons-sharp.md-24 {
+  font-size: 24px;
+}
+.material-icons-sharp.md-36 {
+  font-size: 36px;
+}
+.material-icons-sharp.md-48 {
+  font-size: 48px;
+}
+
+/* Rules for newsletter input box sizing */
+@media only screen and (min-width: 767px) {
+  .news-input {
+    width: 45%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .news-input {
+    width: 100%;
+  }
+}
+
+/* Rules for map sizing */
+#map {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+}
